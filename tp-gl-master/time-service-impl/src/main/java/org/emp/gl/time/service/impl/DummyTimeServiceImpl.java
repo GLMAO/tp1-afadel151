@@ -78,8 +78,6 @@ public class DummyTimeServiceImpl implements TimerService {
 
         int oldValue = dixiemeDeSeconde;
         dixiemeDeSeconde = newDixiemeDeSeconde;
-
-        // informer les listeners !
         dixiemeDeSecondesChanged(oldValue, dixiemeDeSeconde);
     }
 

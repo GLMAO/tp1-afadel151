@@ -1,6 +1,8 @@
 package org.emp.gl.core.launcher;
 
 import org.emp.gl.clients.Horloge ;
+import org.emp.gl.time.service.impl.DummyTimeServiceImpl;
+import org.emp.gl.timer.service.TimerService;
 
 /**
  * Hello world!
@@ -9,12 +11,15 @@ import org.emp.gl.clients.Horloge ;
 public class App {
 
     public static void main(String[] args) {
-
-        testDuTimeService();
+        TimerService Service = new DummyTimeServiceImpl();
+        testDuTimeService(Service);
     }
 
-    private static void testDuTimeService() {
-        Horloge horloge = new Horloge("Num 1") ;
+    private static void testDuTimeService(TimerService Service)
+    {
+        Horloge horloge = new Horloge("Num 1",Service);
+        Service.addTimeChangeListener(horloge);
+        ((DummyTimeServiceImpl) Service).setMinutes(4);
     }
 
     public static void clearScreen() {
