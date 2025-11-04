@@ -1,7 +1,7 @@
 package org.emp.gl.core.launcher;
 
-import org.emp.gl.clients.Horloge ;
-import org.emp.gl.time.service.impl.DummyTimeServiceImpl;
+import org.emp.gl.clients.CompteARebours;
+import org.emp.gl.time.service.impl.DummyTimeServiceImpl ;
 import org.emp.gl.timer.service.TimerService;
 
 /**
@@ -17,8 +17,8 @@ public class App {
 
     private static void testDuTimeService(TimerService Service)
     {
-        Horloge horloge = new Horloge("Num 1",Service);
-        Service.addTimeChangeListener(horloge);
+        CompteARebours  compteur = new CompteARebours(5,Service);
+        Service.addTimeChangeListener(compteur);
         ((DummyTimeServiceImpl) Service).setMinutes(4);
     }
 
