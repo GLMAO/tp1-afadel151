@@ -26,11 +26,6 @@
         // List<TimerChangeListener> listeners = new LinkedList<>();
         PropertyChangeSupport support = new PropertyChangeSupport(this);
 
-        /**
-         * Constructeur du DummyTimeServiceImpl: ici, 
-         * nous nous avons utilisé un objet Timer, qui permet de
-         * réaliser des tics à chaque N millisecondes
-         */
         public DummyTimeServiceImpl() {
             setTimeValues();
             // initialize schedular

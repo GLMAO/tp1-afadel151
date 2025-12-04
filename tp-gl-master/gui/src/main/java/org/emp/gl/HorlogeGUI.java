@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
+import org.emp.Lookup;
 import org.emp.gl.timer.service.TimerChangeListener;
 import org.emp.gl.timer.service.TimerService;
 
@@ -16,9 +17,10 @@ public class HorlogeGUI implements TimerChangeListener {
     JLabel label = new JLabel();
     private final TimerService timerService;
 
-    public HorlogeGUI(String name, TimerService timerService) {
+    public HorlogeGUI(String name) {
+        Lookup lookup = Lookup.getInstance();
         this.name = name;
-        this.timerService = timerService;
+        this.timerService = (TimerService)lookup.getService(TimerService.class);
         System.out.println("Horloge " + name + " initialized! with timer service");
         init();
     }
