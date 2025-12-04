@@ -4,15 +4,16 @@ import java.beans.PropertyChangeEvent;
 
 import org.emp.gl.timer.service.TimerChangeListener;
 import org.emp.gl.timer.service.TimerService;
-
+import org.emp.Lookup;
 public class Horloge implements TimerChangeListener {
 
     String name;
     private final TimerService timerService;
 
-    public Horloge(String name, TimerService timerService) {
+    public Horloge(String name) {
+        Lookup lookup = Lookup.getInstance();
         this.name = name;
-        this.timerService = timerService;
+        this.timerService = (TimerService)lookup.getService(TimerService.class);
         System.out.println("Horloge " + name + " initialized! with timer service");
         init();
     }
