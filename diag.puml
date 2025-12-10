@@ -1,0 +1,195 @@
+@startuml
+title Class Diagram for Watch System
+
+skinparam classAttributeIconSize 0
+
+interface PropertyChangeListener
+class PropertyChangeSupport
+class JFrame
+class JPanel
+class JLabel
+class JButton
+class Timer
+class TimerTask
+class LocalTime
+class Lookup {
+  - {static} Lookup instance
+  - Map<Class<?>, Object> services
+  + {static} Lookup getInstance()
+  + <T> void subscribeService(Class<T> serviceClass, T instance)
+  + <T> T getService(Class<T> serviceClass)
+}
+
+
+interface TimeChangeProvider {
+  + void addTimeChangeListener(TimerChangeListener pl)
+  + void removeTimeChangeListener(TimerChangeListener pl)
+}
+
+interface TimerService extends TimeChangeProvider {
+  + int getMinutes()
+  + int getHeures()
+  + int getSecondes()
+  + int getDixiemeDeSeconde()
+}
+
+interface TimerChangeListener extends PropertyChangeListener {
+  + {static} String DIXEME_DE_SECONDE_PROP = "dixième"
+  + {static} String SECONDE_PROP = "seconde"
+  + {static} String MINUTE_PROP = "minute"
+  + {static} String HEURE_PROP = "heure"
+}
+
+interface WatchState {
+  + void updateDisplay()
+  + void onMode()
+  + void onSet()
+}
+
+' Classes
+class Horloge implements TimerChangeListener {
+  - String name
+  - TimerService timerService
+  - int seconds
+  - int minutes
+  - int hours
+  - boolean locked = false
+  + Horloge(String name)
+  - void init()
+  + void afficherHeure()
+  + void secondElapsed()
+  + void propertyChange(PropertyChangeEvent event)
+  + void incrementSecond()
+  + void incrementMinutes()
+  + void incrementHours()
+  + int getHours()
+  + int getMinutes()
+  + int getSeconds()
+  + void setHours(int h)
+  + void setMinutes(int m)
+  + void setSeconds(int s)
+  + void lock()
+  + void unlock()
+  + boolean isLocked()
+}
+
+class DummyTimeServiceImpl implements TimerService {
+  - int dixiemeDeSeconde
+  - int minutes
+  - int secondes
+  - int heures
+  - PropertyChangeSupport support
+  + DummyTimeServiceImpl()
+  - void setTimeValues()
+  - void timeChanged()
+  + void addTimeChangeListener(TimerChangeListener pl)
+  + void removeTimeChangeListener(TimerChangeListener pl)
+  + void setDixiemeDeSeconde(int newDixiemeDeSeconde)
+  - void dixiemeDeSecondesChanged(int oldValue, int newValue)
+  + void setSecondes(int newSecondes)
+  - void secondesChanged(int oldValue, int secondes)
+  + void setMinutes(int newMinutes)
+  - void minutesChanged(int oldValue, int minutes)
+  + void setHeures(int newHeures)
+  - void heuresChanged(int oldValue, int heures)
+  + int getDixiemeDeSeconde()
+  + int getHeures()
+  + int getMinutes()
+  + int getSecondes()
+}
+
+class WatchViewer extends JFrame implements TimerChangeListener {
+  + {static} int COUNT = 0
+  - WatchState state
+  - Horloge horloge
+  - Chronometer chrono
+  - ButtonViewer buttonViewer
+  - JLabel hh
+  - JLabel mm
+  - JLabel sep
+  - JLabel mod
+  + WatchViewer()
+  + Chronometer getChrono()
+  - void initComponents()
+  + Horloge getHorloge()
+  + void doSet()
+  + void doMode()
+  + void ticHappened()
+  + void setTextPosition1(String txt)
+  + void setTextPosition2(String txt)
+  + void setTextSeparator(String txt)
+  + void setTextPosition3(String txt)
+  + void setState(WatchState newState)
+  + JLabel getSep()
+  + void propertyChange(PropertyChangeEvent event)
+  + void updateDisplay()
+}
+
+class SettingsState implements WatchState {
+  - enum Field { HOURS, MINUTES, SECONDS }
+  - Field field = Field.HOURS
+  - WatchViewer watchViewer
+  - Horloge horloge
+  + SettingsState(WatchViewer v)
+  + void updateDisplay()
+  + void onMode()
+  + void onSet()
+}
+
+class HHmmState implements WatchState
+
+class SecondsState implements WatchState
+
+class ChronometerState implements WatchState
+
+class Chronometer implements TimerChangeListener {
+  - int dizieme = 0
+  - int secondes = 0
+  - boolean running = false
+  + Chronometer()
+  + void start()
+  + void stop()
+  + void reset()
+  + boolean isRunning()
+  + void propertyChange(PropertyChangeEvent evt)
+  + int getSecondes()
+  + int getDizieme()
+}
+
+class ButtonViewer extends JPanel {
+  - WatchViewer watchViewer
+  - JButton setButton
+  - JButton modeButton
+  + ButtonViewer(WatchViewer w)
+  - void initComponents()
+}
+
+class App {
+  + {static} Lookup lookup = Lookup.getInstance()
+  + {static} void main(String[] args)
+}
+
+Horloge "1" --> "1" TimerService : timerService
+Horloge ..> Lookup : uses getService
+DummyTimeServiceImpl "1" --> "1" PropertyChangeSupport : support
+DummyTimeServiceImpl ..> LocalTime : uses
+DummyTimeServiceImpl ..> Timer : uses
+DummyTimeServiceImpl ..> TimerTask : uses
+WatchViewer "1" *-- "1" Horloge : horloge
+WatchViewer "1" *-- "1" Chronometer : chrono
+WatchViewer "1" *-- "1" ButtonViewer : buttonViewer
+WatchViewer "1" --> "1" WatchState : state
+WatchViewer ..> JLabel : uses
+WatchViewer ..> JButton : uses
+SettingsState "1" --> "1" WatchViewer : watchViewer
+SettingsState "1" --> "1" Horloge : horloge
+Chronometer ..> Lookup : uses getService
+Chronometer ..> TimerService : uses
+ButtonViewer "1" --> "1" WatchViewer : watchViewer
+ButtonViewer ..> JButton : uses
+App ..> Lookup : uses
+App ..> DummyTimeServiceImpl : creates
+App ..> WatchViewer : creates
+TimerService ..> TimerChangeListener : notifies
+
+@enduml
