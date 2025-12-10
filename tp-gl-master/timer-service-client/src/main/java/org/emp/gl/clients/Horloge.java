@@ -13,6 +13,7 @@ public class Horloge implements TimerChangeListener {
     int seconds;
     int minutes;
     int hours;
+    private boolean locked = false;
 
     public Horloge(String name) {
         Lookup lookup = Lookup.getInstance();
@@ -52,6 +53,7 @@ public class Horloge implements TimerChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent event) {
+        if (locked) return;
         switch (event.getPropertyName()) {
             case SECONDE_PROP:
                 this.afficherHeure();
@@ -87,4 +89,27 @@ public class Horloge implements TimerChangeListener {
         return seconds;
     }
 
+    public void setHours(int h) {
+        this.hours = h;
+    }
+
+    public void setMinutes(int m) {
+        this.minutes = m;
+    }
+
+    public void setSeconds(int s) {
+        this.seconds = s;
+    }
+
+    public void lock() {
+        locked = true;
+    }
+
+    public void unlock() {
+        locked = false;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
 }
