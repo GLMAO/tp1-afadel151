@@ -9,6 +9,8 @@ public class ChronometerState implements WatchState {
     {
         this.watchViewer = v;
         c = watchViewer.getChrono();
+        updateDisplay();
+
     }
 
 
@@ -20,17 +22,23 @@ public class ChronometerState implements WatchState {
         watchViewer.setTextPosition3("C");
     }
 
-    public void onMode(){
+    public void onMode() {
         if (!c.isRunning() && (c.getSecondes() != 0 || c.getDizieme() != 0)) {
             c.reset();
+            updateDisplay();
         } else {
             watchViewer.setState(new HHmmState(watchViewer));
+            watchViewer.updateDisplay();
         }
     }
+    
 
-    public void onSet(){
-        if (c.isRunning()) c.stop();
-        else c.start();
+    public void onSet() {
+        if (c.isRunning()) 
+            c.stop();
+        else 
+            c.start();
     }
+    
 
 }
